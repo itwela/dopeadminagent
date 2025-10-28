@@ -58,22 +58,9 @@ Then open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Environment Variables
 
-Create a `.env.local` file with:
+Get the environment variables from **Twezo**.
 
-```bash
-# PostgreSQL (Dope Core)
-DOPE_CORE_PG_USER=<your_username>
-DOPE_CORE_PG_HOST=<your_host>
-DOPE_CORE_PG_DATABASE=<your_database>
-DOPE_CORE_PG_PASSWORD=<your_password>
-DOPE_CORE_PG_PORT=5432
-
-# MongoDB ATTOM
-ATTOM_MONGODB_URI=<your_mongodb_connection_string>
-
-# MongoDB CRM
-CRM_MONGODB_URI=<your_mongodb_connection_string>
-```
+Create both a `.env` file and a `.env.local` file in the project root with the required environment variables.
 
 ## Learn more
 
