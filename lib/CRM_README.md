@@ -13,7 +13,7 @@ The CRM database is a MongoDB database that stores customer relationship managem
 Add your CRM MongoDB connection string to your `.env.local` file:
 
 ```bash
-CRM_MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/crm_database
+CRM_MONGODB_URI=<your_mongodb_connection_string>
 ```
 
 ## File Structure

@@ -62,17 +62,17 @@ Create a `.env.local` file with:
 
 ```bash
 # PostgreSQL (Dope Core)
-DOPE_CORE_PG_USER=your_user
-DOPE_CORE_PG_HOST=your_host
-DOPE_CORE_PG_DATABASE=dope_mail_production
-DOPE_CORE_PG_PASSWORD=your_password
+DOPE_CORE_PG_USER=<your_username>
+DOPE_CORE_PG_HOST=<your_host>
+DOPE_CORE_PG_DATABASE=<your_database>
+DOPE_CORE_PG_PASSWORD=<your_password>
 DOPE_CORE_PG_PORT=5432
 
 # MongoDB ATTOM
-ATTOM_MONGODB_URI=mongodb+srv://your-attom-connection-string
+ATTOM_MONGODB_URI=<your_mongodb_connection_string>
 
 # MongoDB CRM
-CRM_MONGODB_URI=mongodb+srv://your-crm-connection-string
+CRM_MONGODB_URI=<your_mongodb_connection_string>
 ```
 
 ## Learn more
