@@ -163,6 +163,62 @@ export const dopeCoreDbTools = {
       [limit]
     );
   },
+
+  /**
+   * Get first 10 accounts from the accounts table
+   */
+  getFirst10Accounts: async () => {
+    return await queryAll(
+      `SELECT * FROM accounts LIMIT 10`
+    );
+  },
+
+  /**
+   * Search accounts by name (case-insensitive, partial match)
+   */
+  searchAccountsByName: async (
+    nameQuery: string,
+    options?: { limit?: number; offset?: number }
+  ) => {
+    const limit = options?.limit ?? 1;
+    const offset = options?.offset ?? 0;
+    const q = `%${nameQuery}%`;
+    return await queryAll(
+      `SELECT * FROM accounts WHERE name ILIKE $1 ORDER BY name ASC LIMIT $2 OFFSET $3`,
+      [q, limit, offset]
+    );
+  },
+
+  /**
+   * Get integrations_customer_id for accounts matching name search
+   */
+  getIntegrationsCustomerIdByName: async (
+    nameQuery: string,
+    options?: { limit?: number; offset?: number }
+  ) => {
+    const limit = options?.limit ?? 1;
+    const offset = options?.offset ?? 0;
+    const q = `%${nameQuery}%`;
+    return await queryAll<{ id: string; name: string; integrations_customer_id: string }>(
+      `SELECT id, name, integrations_customer_id FROM accounts WHERE name ILIKE $1 ORDER BY name ASC LIMIT $2 OFFSET $3`,
+      [q, limit, offset]
+    );
+  },
+
+  /**
+   * Get accounts by integrations_customer_id (exact match)
+   */
+  getAccountsByIntegrationsId: async (
+    integrationsCustomerId: string,
+    options?: { limit?: number; offset?: number }
+  ) => {
+    const limit = options?.limit ?? 25;
+    const offset = options?.offset ?? 0;
+    return await queryAll(
+      `SELECT * FROM accounts WHERE integrations_customer_id = $1 ORDER BY name ASC LIMIT $2 OFFSET $3`,
+      [integrationsCustomerId, limit, offset]
+    );
+  },
 };
 
 export default pool;

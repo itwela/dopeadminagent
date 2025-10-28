@@ -1,21 +1,21 @@
 import { NextResponse } from 'next/server';
-import { connectToAttom } from '@/lib/attom-db';
+import { connectToCrm } from '@/lib/crm-db';
 
 export async function GET() {
   try {
-    const connection = await connectToAttom();
+    const connection = await connectToCrm();
     const dbName = connection.db?.databaseName;
     
-    console.log('✅ Connected to ATTOM MongoDB database');
+    console.log('✅ Connected to CRM MongoDB database');
     
     return NextResponse.json({ 
       success: true, 
-      message: 'Connected to ATTOM MongoDB!',
+      message: 'Connected to CRM MongoDB!',
       database: dbName,
       host: connection.host,
     });
   } catch (error: any) {
-    console.error('❌ ATTOM MongoDB connection failed:', error);
+    console.error('❌ CRM MongoDB connection failed:', error);
     return NextResponse.json({ 
       success: false, 
       error: error.message 

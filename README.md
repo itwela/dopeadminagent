@@ -6,7 +6,8 @@ This project provides a unified interface for managing multiple databases with t
 
 - **Convex** - Backend database and server logic
 - **PostgreSQL** - Dope Core database (dope_mail_production)
-- **MongoDB** - ATTOM database (TaxAssessors)
+- **MongoDB ATTOM** - ATTOM database (TaxAssessors)
+- **MongoDB CRM** - CRM database
 - [Next.js](https://nextjs.org/) for optimized web hosting and page routing
 - [Tailwind](https://tailwindcss.com/) for beautiful, accessible UI
 - [Convex Auth](https://labs.convex.dev/auth) for authentication
@@ -40,9 +41,18 @@ Then open [http://localhost:3000](http://localhost:3000) in your browser.
   - `/api/attom/info` - List all collections
   - `/api/attom/test-connection` - Test connection
   - `/api/attom/test-functions` - Execute database functions
-- **Documentation**: See `lib/ATTOM_README.md`
+- **Documentation**: See `ATTOM_SETUP_SUMMARY.md` and `lib/ATTOM_README.md`
 
-### 3. Convex
+### 3. MongoDB (CRM)
+- **Database**: CRM
+- **Test Page**: [/test-functions/crm](http://localhost:3000/test-functions/crm)
+- **API Endpoints**:
+  - `/api/crm/info` - List all collections
+  - `/api/crm/test-connection` - Test connection
+  - `/api/crm/test-functions` - Execute database functions
+- **Documentation**: See `CRM_SETUP_SUMMARY.md` and `lib/CRM_README.md`
+
+### 4. Convex
 - **Backend**: Convex database for app data
 - **Dashboard**: Run `npm run dev` to access Convex dashboard
 
@@ -58,8 +68,11 @@ DOPE_CORE_PG_DATABASE=dope_mail_production
 DOPE_CORE_PG_PASSWORD=your_password
 DOPE_CORE_PG_PORT=5432
 
-# MongoDB ATTOM (Optional - has default connection string)
-ATTOM_MONGODB_URI=mongodb+srv://your-connection-string
+# MongoDB ATTOM
+ATTOM_MONGODB_URI=mongodb+srv://your-attom-connection-string
+
+# MongoDB CRM
+CRM_MONGODB_URI=mongodb+srv://your-crm-connection-string
 ```
 
 ## Learn more

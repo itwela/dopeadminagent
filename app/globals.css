@@ -1,8 +1,15 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fafaf9;
+  --foreground: #3f3f46;
+  --card-bg: #ffffff;
+  --border: #e7e5e4;
+  --accent: #ef4444;
+  --accent-hover: #dc2626;
+  --muted: #a8a29e;
+  --success: #10b981;
+  --radius: 0.5rem;
 }
 
 @theme inline {
@@ -14,13 +21,294 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #18181b;
+    --foreground: #d4d4d8;
+    --card-bg: #27272a;
+    --border: #3f3f46;
+    --accent: #f87171;
+    --accent-hover: #ef4444;
+    --muted: #71717a;
+    --success: #34d399;
   }
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Minimal button reset */
+button {
+  font-family: inherit;
+  font-size: inherit;
+  border: none;
+  background: none;
+  cursor: pointer;
+  outline: none;
+}
+
+/* Zen card style */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.03);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.05);
+  border-color: var(--accent);
+}
+
+/* Zen button style */
+.btn {
+  padding: 0.5rem 1rem;
+  border-radius: calc(var(--radius) - 0.125rem);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: white;
+  box-shadow: 0 1px 2px 0 rgba(239, 68, 68, 0.15);
+}
+
+.btn-primary:hover {
+  background: var(--accent-hover);
+  box-shadow: 0 2px 6px 0 rgba(239, 68, 68, 0.25);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--foreground);
+  border: 1px solid var(--border);
+}
+
+.btn-secondary:hover {
+  background: var(--card-bg);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.btn-danger {
+  background: transparent;
+  color: #ef4444;
+  border: 1px solid #fecaca;
+}
+
+.btn-danger:hover {
+  background: #fef2f2;
+  border-color: #ef4444;
+}
+
+/* Zen input style */
+input[type="text"],
+input[type="number"],
+select,
+textarea {
+  font-family: inherit;
+  font-size: 0.8125rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 0.125rem);
+  background: var(--card-bg);
+  color: var(--foreground);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+/* Zen layout helpers */
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 2.75rem;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+/* Subtle progress bar */
+.progress-bar {
+  width: 100%;
+  height: 3px;
+  background: var(--border);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--success));
+  transition: width 0.3s ease;
+}
+
+/* Minimal badge */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background: var(--border);
+  color: var(--muted);
+}
+
+.badge-success {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--success);
+}
+
+.badge-running {
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--accent);
+}
+
+/* Subtle spin animation for loading states */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Tester pages: normalize left-hand blocks to zen style */
+.tester-section {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card-bg);
+  padding: 0.75rem;
+}
+
+.tester-section .tester-title {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--foreground);
+  margin-bottom: 0.5rem;
+}
+
+.tester-section .tester-subtitle {
+  font-size: 0.6875rem;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+
+.tester-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.5rem;
+}
+
+.tester-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+}
+
+/* Override Tailwind padding for tester form blocks */
+.border.border-slate-300.dark\\:border-slate-600.rounded-md {
+  padding: 0.75rem !important;
+}
+
+/* Override Tailwind padding for tester form blocks with !p-3 */
+.border.border-slate-300.dark\\:border-slate-600.rounded-md.p-3 {
+  padding: 0.75rem !important;
+}
+
+/* Enhanced function buttons */
+.function-button {
+  background: var(--accent);
+  color: white;
+  border: 1px solid var(--accent);
+  border-radius: calc(var(--radius) - 0.125rem);
+  padding: 0.75rem 1rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  transition: all 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  width: 100%;
+  margin-bottom: 0.75rem;
+  box-shadow: 0 1px 3px 0 rgba(239, 68, 68, 0.15);
+}
+
+.function-button:hover {
+  background: var(--accent-hover);
+  box-shadow: 0 2px 6px 0 rgba(239, 68, 68, 0.25);
+  transform: translateY(-1px);
+}
+
+.function-button .function-name {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.75rem;
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+}
+
+.function-button .function-description {
+  font-size: 0.6875rem;
+  opacity: 0.9;
+  line-height: 1.4;
+}
+
+/* Spacing between option blocks and emphasis for run buttons inside tester forms */
+.tester-form-group, .mb-3, .mb-4 {
+  margin-bottom: 1rem !important;
+}
+
+.tester-form-group .btn-run,
+.mb-3 .btn-run,
+.mb-4 .btn-run {
+  background: linear-gradient(180deg, var(--accent), var(--accent-hover));
+  color: #fff;
+  border: 1px solid var(--accent);
+  box-shadow: 0 3px 10px rgba(239, 68, 68, 0.25);
+}
+
+.tester-form-group .btn-run:hover,
+.mb-3 .btn-run:hover,
+.mb-4 .btn-run:hover {
+  filter: brightness(1.02);
+  transform: translateY(-1px);
 }

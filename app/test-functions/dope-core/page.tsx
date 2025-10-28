@@ -14,6 +14,10 @@ export default function DopeCoreTestFunctionsPage() {
   const [whereClause, setWhereClause] = useState("");
   const [limit, setLimit] = useState("10");
   const [orderByColumn, setOrderByColumn] = useState("created_at");
+  const [nameQuery, setNameQuery] = useState("");
+  const [searchLimit, setSearchLimit] = useState("25");
+  const [searchOffset, setSearchOffset] = useState("0");
+  const [integrationsCustomerId, setIntegrationsCustomerId] = useState("");
 
   const runTest = async (functionName: string, params?: any) => {
     setLoading(true);
@@ -34,84 +38,229 @@ export default function DopeCoreTestFunctionsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 p-8">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <Link href="/" className="text-sm text-blue-500 hover:underline mb-2 block">
+    <div style={{ minHeight: '100vh' }}>
+      <div className="container">
+        <div className="row" style={{ justifyContent: 'space-between', marginBottom: '1.5rem' }}>
+          <div className="stack" style={{ gap: '0.5rem' }}>
+            <Link href="/" className="btn btn-secondary" style={{ textDecoration: 'none', width: 'fit-content' }}>
               ← Back to Home
             </Link>
-            <h1 className="text-4xl font-bold mb-2">
-              <span className="text-purple-500">Dope Core</span> Function Tester
+            <h1 style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--foreground)' }}>
+              Dope Core Function Tester
             </h1>
-            <p className="text-slate-600 dark:text-slate-400">
-              Database: <code className="bg-slate-200 dark:bg-slate-800 px-2 py-1 rounded">dope_mail_production</code>
+            <p style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>
+              Database: <code style={{ background: 'var(--background)', padding: '0.125rem 0.375rem', borderRadius: 'calc(var(--radius) - 0.25rem)', fontSize: '0.75rem' }}>dope_mail_production</code>
             </p>
           </div>
-          <div className="bg-purple-100 dark:bg-purple-900 px-4 py-2 rounded-lg">
-            <div className="text-sm font-semibold text-purple-800 dark:text-purple-200">DB 1/3</div>
-            <div className="text-xs text-purple-600 dark:text-purple-300">Dope Core</div>
+          <div className="badge" style={{ height: 'fit-content', background: 'rgba(99, 102, 241, 0.1)', color: 'var(--accent)' }}>
+            Dope Core
           </div>
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '0.75rem', marginBottom: '1.5rem' }}>
           <a
             href="/api/dope-core/info"
             target="_blank"
-            className="bg-green-500 hover:bg-green-600 text-white p-4 rounded-lg transition shadow flex items-center justify-between"
+            className="btn btn-secondary"
+            style={{ textDecoration: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
           >
             <div>
-              <div className="font-bold mb-1">📊 View All Tables</div>
-              <div className="text-xs opacity-90">Get list of all tables</div>
+              <div style={{ fontWeight: 600, marginBottom: '0.125rem' }}>📊 View All Tables</div>
+              <div style={{ fontSize: '0.6875rem', color: 'var(--muted)' }}>Get list of all tables</div>
             </div>
-            <div className="text-2xl">→</div>
+            <div>→</div>
           </a>
 
           <a
             href="/api/dope-core/test-connection"
             target="_blank"
-            className="bg-blue-500 hover:bg-blue-600 text-white p-4 rounded-lg transition shadow flex items-center justify-between"
+            className="btn btn-secondary"
+            style={{ textDecoration: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
           >
             <div>
-              <div className="font-bold mb-1">🔌 Test Connection</div>
-              <div className="text-xs opacity-90">Verify database connection</div>
+              <div style={{ fontWeight: 600, marginBottom: '0.125rem' }}>🔌 Test Connection</div>
+              <div style={{ fontSize: '0.6875rem', color: 'var(--muted)' }}>Verify database connection</div>
             </div>
-            <div className="text-2xl">→</div>
+            <div>→</div>
           </a>
         </div>
 
         {/* Available Functions Reference */}
-        <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg p-4 mb-6">
-          <h3 className="font-semibold text-purple-800 dark:text-purple-200 mb-2">Available Functions:</h3>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-xs font-mono">
-            <div className="bg-white dark:bg-slate-800 px-2 py-1 rounded">dopeCoreDbTools.listTables()</div>
-            <div className="bg-white dark:bg-slate-800 px-2 py-1 rounded">dopeCoreDbTools.getTableSchema()</div>
-            <div className="bg-white dark:bg-slate-800 px-2 py-1 rounded">dopeCoreDbTools.executeSelect()</div>
-            <div className="bg-white dark:bg-slate-800 px-2 py-1 rounded">dopeCoreDbTools.countRows()</div>
-            <div className="bg-white dark:bg-slate-800 px-2 py-1 rounded">dopeCoreDbTools.getRecentRows()</div>
+        <div className="card" style={{ marginBottom: '1.5rem', background: 'rgba(99, 102, 241, 0.03)', borderColor: 'var(--accent)' }}>
+          <h3 style={{ fontWeight: 600, color: 'var(--accent)', marginBottom: '0.5rem', fontSize: '0.8125rem' }}>Available Functions:</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.5rem', fontSize: '0.6875rem', fontFamily: 'monospace' }}>
+            <div className="badge" style={{ width: '100%', justifyContent: 'flex-start' }}>dopeCoreDbTools.listTables()</div>
+            <div className="badge" style={{ width: '100%', justifyContent: 'flex-start' }}>dopeCoreDbTools.getTableSchema()</div>
+            <div className="badge" style={{ width: '100%', justifyContent: 'flex-start' }}>dopeCoreDbTools.executeSelect()</div>
+            <div className="badge" style={{ width: '100%', justifyContent: 'flex-start' }}>dopeCoreDbTools.countRows()</div>
+            <div className="badge" style={{ width: '100%', justifyContent: 'flex-start' }}>dopeCoreDbTools.getRecentRows()</div>
+            <div className="badge" style={{ width: '100%', justifyContent: 'flex-start' }}>dopeCoreDbTools.getFirst10Accounts()</div>
+            <div className="badge" style={{ width: '100%', justifyContent: 'flex-start' }}>dopeCoreDbTools.searchAccountsByName()</div>
+            <div className="badge" style={{ width: '100%', justifyContent: 'flex-start' }}>dopeCoreDbTools.getIntegrationsCustomerIdByName()</div>
+            <div className="badge" style={{ width: '100%', justifyContent: 'flex-start' }}>dopeCoreDbTools.getAccountsByIntegrationsId()</div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
           {/* Left side - Function buttons */}
-          <div className="space-y-4">
-            <div className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow">
-              <h2 className="text-xl font-semibold mb-4">Available Functions</h2>
+          <div className="stack" style={{ padding: '0.5rem' }}>
+            <div className="card">
+              <h2 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '1rem', color: 'var(--foreground)' }}>Available Functions</h2>
 
               {/* List Tables */}
               <button
                 onClick={() => runTest("listTables")}
-                className="w-full mb-3 bg-blue-500 hover:bg-blue-600 text-white px-4 py-3 rounded-md text-left transition"
+                className="function-button"
               >
-                <div className="font-mono text-sm">dopeCoreDbTools.listTables()</div>
-                <div className="text-xs opacity-80 mt-1">
+                <div className="function-name">dopeCoreDbTools.listTables()</div>
+                <div className="function-description">
                   Get all table names in Dope Core database
                 </div>
               </button>
 
+              {/* Get First 10 Accounts */}
+              <button
+                onClick={() => runTest("getFirst10Accounts")}
+                className="function-button"
+              >
+                <div className="function-name">dopeCoreDbTools.getFirst10Accounts()</div>
+                <div className="function-description">
+                  Get first 10 accounts from the accounts table
+                </div>
+              </button>
+
+              {/* Search Accounts by Name */}
+              <div className="mb-3 border border-slate-300 dark:border-slate-600 rounded-md !p-3">
+                <div className="font-mono text-sm mb-2">
+                  dopeCoreDbTools.searchAccountsByName(nameQuery, options?)
+                </div>
+                <input
+                  type="text"
+                  placeholder="Search term (e.g., 'Dope', 'Marketing')"
+                  value={nameQuery}
+                  onChange={(e) => setNameQuery(e.target.value)}
+                  className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded mb-2 bg-white dark:bg-slate-700"
+                />
+                <div className="grid grid-cols-2 gap-2 mb-2">
+                  <input
+                    type="number"
+                    placeholder="Limit (default: 25)"
+                    value={searchLimit}
+                    onChange={(e) => setSearchLimit(e.target.value)}
+                    className="px-3 py-2 border border-slate-300 dark:border-slate-600 rounded bg-white dark:bg-slate-700"
+                  />
+                  <input
+                    type="number"
+                    placeholder="Offset (default: 0)"
+                    value={searchOffset}
+                    onChange={(e) => setSearchOffset(e.target.value)}
+                    className="px-3 py-2 border border-slate-300 dark:border-slate-600 rounded bg-white dark:bg-slate-700"
+                  />
+                </div>
+                <button
+                  onClick={() =>
+                    runTest("searchAccountsByName", {
+                      nameQuery,
+                      limit: parseInt(searchLimit) || 25,
+                      offset: parseInt(searchOffset) || 0,
+                    })
+                  }
+                  disabled={!nameQuery}
+                  className="w-full bg-indigo-500 hover:bg-indigo-600 disabled:bg-slate-300 text-white px-4 py-2 rounded transition btn-run"
+                >
+                  Search Accounts
+                </button>
+              </div>
+
+              {/* Get Integrations Customer ID by Name */}
+              <div className="mb-3 border border-slate-300 dark:border-slate-600 rounded-md !p-3">
+                <div className="font-mono text-sm mb-2">
+                  dopeCoreDbTools.getIntegrationsCustomerIdByName(nameQuery, options?)
+                </div>
+                <input
+                  type="text"
+                  placeholder="Search term (e.g., 'Dope Marketing')"
+                  value={nameQuery}
+                  onChange={(e) => setNameQuery(e.target.value)}
+                  className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded mb-2 bg-white dark:bg-slate-700"
+                />
+                <div className="grid grid-cols-2 gap-2 mb-2">
+                  <input
+                    type="number"
+                    placeholder="Limit (default: 25)"
+                    value={searchLimit}
+                    onChange={(e) => setSearchLimit(e.target.value)}
+                    className="px-3 py-2 border border-slate-300 dark:border-slate-600 rounded bg-white dark:bg-slate-700"
+                  />
+                  <input
+                    type="number"
+                    placeholder="Offset (default: 0)"
+                    value={searchOffset}
+                    onChange={(e) => setSearchOffset(e.target.value)}
+                    className="px-3 py-2 border border-slate-300 dark:border-slate-600 rounded bg-white dark:bg-slate-700"
+                  />
+                </div>
+                <button
+                  onClick={() =>
+                    runTest("getIntegrationsCustomerIdByName", {
+                      nameQuery,
+                      limit: parseInt(searchLimit) || 25,
+                      offset: parseInt(searchOffset) || 0,
+                    })
+                  }
+                  disabled={!nameQuery}
+                  className="w-full bg-cyan-500 hover:bg-cyan-600 disabled:bg-slate-300 text-white px-4 py-2 rounded transition btn-run"
+                >
+                  Get Integrations Customer ID
+                </button>
+              </div>
+
+              {/* Get Accounts by Integrations Customer ID */}
+              <div className="mb-3 border border-slate-300 dark:border-slate-600 rounded-md !p-3">
+                <div className="font-mono text-sm mb-2">
+                  dopeCoreDbTools.getAccountsByIntegrationsId(integrationsCustomerId, options?)
+                </div>
+                <input
+                  type="text"
+                  placeholder="integrations_customer_id"
+                  value={integrationsCustomerId}
+                  onChange={(e) => setIntegrationsCustomerId(e.target.value)}
+                  className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded mb-2 bg-white dark:bg-slate-700"
+                />
+                <div className="grid grid-cols-2 gap-2 mb-2">
+                  <input
+                    type="number"
+                    placeholder="Limit (default: 25)"
+                    value={searchLimit}
+                    onChange={(e) => setSearchLimit(e.target.value)}
+                    className="px-3 py-2 border border-slate-300 dark:border-slate-600 rounded bg-white dark:bg-slate-700"
+                  />
+                  <input
+                    type="number"
+                    placeholder="Offset (default: 0)"
+                    value={searchOffset}
+                    onChange={(e) => setSearchOffset(e.target.value)}
+                    className="px-3 py-2 border border-slate-300 dark:border-slate-600 rounded bg-white dark:bg-slate-700"
+                  />
+                </div>
+                <button
+                  onClick={() =>
+                    runTest("getAccountsByIntegrationsId", {
+                      integrationsCustomerId,
+                      limit: parseInt(searchLimit) || 25,
+                      offset: parseInt(searchOffset) || 0,
+                    })
+                  }
+                  disabled={!integrationsCustomerId}
+                  className="w-full bg-teal-500 hover:bg-teal-600 disabled:bg-slate-300 text-white px-4 py-2 rounded transition btn-run"
+                >
+                  Get Accounts by Integrations ID
+                </button>
+              </div>
+
               {/* Get Table Schema */}
-              <div className="mb-3 border border-slate-300 dark:border-slate-600 rounded-md p-3">
+              <div className="mb-3 border border-slate-300 dark:border-slate-600 rounded-md !p-3">
                 <div className="font-mono text-sm mb-2">
                   dopeCoreDbTools.getTableSchema(tableName)
                 </div>
@@ -125,14 +274,14 @@ export default function DopeCoreTestFunctionsPage() {
                 <button
                   onClick={() => runTest("getTableSchema", { tableName })}
                   disabled={!tableName}
-                  className="w-full bg-green-500 hover:bg-green-600 disabled:bg-slate-300 text-white px-4 py-2 rounded transition"
+                  className="w-full bg-green-500 hover:bg-green-600 disabled:bg-slate-300 text-white px-4 py-2 rounded transition btn-run"
                 >
                   Run
                 </button>
               </div>
 
               {/* Execute Select */}
-              <div className="mb-3 border border-slate-300 dark:border-slate-600 rounded-md p-3">
+              <div className="mb-3 border border-slate-300 dark:border-slate-600 rounded-md !p-3">
                 <div className="font-mono text-sm mb-2">
                   dopeCoreDbTools.executeSelect(query)
                 </div>
@@ -146,14 +295,14 @@ export default function DopeCoreTestFunctionsPage() {
                 <button
                   onClick={() => runTest("executeSelect", { query: sqlQuery })}
                   disabled={!sqlQuery}
-                  className="w-full bg-purple-500 hover:bg-purple-600 disabled:bg-slate-300 text-white px-4 py-2 rounded transition"
+                  className="w-full bg-purple-500 hover:bg-purple-600 disabled:bg-slate-300 text-white px-4 py-2 rounded transition btn-run"
                 >
                   Run
                 </button>
               </div>
 
               {/* Count Rows */}
-              <div className="mb-3 border border-slate-300 dark:border-slate-600 rounded-md p-3">
+              <div className="mb-3 border border-slate-300 dark:border-slate-600 rounded-md !p-3">
                 <div className="font-mono text-sm mb-2">
                   dopeCoreDbTools.countRows(tableName, whereClause?)
                 </div>
@@ -179,14 +328,14 @@ export default function DopeCoreTestFunctionsPage() {
                     })
                   }
                   disabled={!tableName}
-                  className="w-full bg-orange-500 hover:bg-orange-600 disabled:bg-slate-300 text-white px-4 py-2 rounded transition"
+                  className="w-full bg-orange-500 hover:bg-orange-600 disabled:bg-slate-300 text-white px-4 py-2 rounded transition btn-run"
                 >
                   Run
                 </button>
               </div>
 
               {/* Get Recent Rows */}
-              <div className="mb-3 border border-slate-300 dark:border-slate-600 rounded-md p-3">
+              <div className="mb-3 border border-slate-300 dark:border-slate-600 rounded-md !p-3">
                 <div className="font-mono text-sm mb-2">
                   dopeCoreDbTools.getRecentRows(tableName, limit?, orderByColumn?)
                 </div>
@@ -220,7 +369,7 @@ export default function DopeCoreTestFunctionsPage() {
                     })
                   }
                   disabled={!tableName}
-                  className="w-full bg-pink-500 hover:bg-pink-600 disabled:bg-slate-300 text-white px-4 py-2 rounded transition"
+                  className="w-full bg-pink-500 hover:bg-pink-600 disabled:bg-slate-300 text-white px-4 py-2 rounded transition btn-run"
                 >
                   Run
                 </button>
@@ -229,45 +378,42 @@ export default function DopeCoreTestFunctionsPage() {
           </div>
 
           {/* Right side - Results */}
-          <div className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow sticky top-8 max-h-[calc(100vh-4rem)] overflow-auto">
-            <h2 className="text-xl font-semibold mb-4">Results</h2>
+          <div className="card" style={{ position: 'sticky', top: '2rem', maxHeight: 'calc(100vh - 4rem)', overflow: 'auto' }}>
+            <h2 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '1rem', color: 'var(--foreground)' }}>Results</h2>
 
             {loading && (
-              <div className="text-center py-12">
-                <div className="text-slate-500">Running {selectedFunction}...</div>
+              <div style={{ textAlign: 'center', padding: '3rem 0' }}>
+                <div style={{ fontSize: '0.8125rem', color: 'var(--muted)' }}>Running {selectedFunction}...</div>
               </div>
             )}
 
             {!loading && !results && (
-              <div className="text-center py-12 text-slate-400">
+              <div style={{ textAlign: 'center', padding: '3rem 0', fontSize: '0.8125rem', color: 'var(--muted)' }}>
                 Click a function to see results
               </div>
             )}
 
             {!loading && results && (
               <div>
-                <div className="mb-3 flex items-center justify-between">
-                  <div className="text-sm font-mono text-slate-500">
+                <div className="row" style={{ marginBottom: '0.75rem', justifyContent: 'space-between' }}>
+                  <div style={{ fontSize: '0.75rem', fontFamily: 'monospace', color: 'var(--muted)' }}>
                     {selectedFunction}
                   </div>
                   {results.success !== undefined && (
                     <div
-                      className={`text-xs px-2 py-1 rounded ${
-                        results.success
-                          ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                          : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
-                      }`}
+                      className={results.success ? "badge badge-success" : "badge"}
+                      style={{ background: results.success ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)', color: results.success ? 'var(--success)' : '#ef4444' }}
                     >
                       {results.success ? "SUCCESS" : "ERROR"}
                     </div>
                   )}
                 </div>
                 {results.database && (
-                  <div className="mb-2 text-xs text-purple-600 dark:text-purple-400">
+                  <div style={{ marginBottom: '0.5rem', fontSize: '0.6875rem', color: 'var(--accent)' }}>
                     Database: {results.database}
                   </div>
                 )}
-                <pre className="bg-slate-900 text-green-400 p-4 rounded-lg overflow-auto max-h-[600px] text-sm">
+                <pre style={{ background: '#18181b', color: '#10b981', padding: '0.75rem', borderRadius: 'var(--radius)', overflow: 'auto', maxHeight: '600px', fontSize: '0.6875rem', lineHeight: 1.4 }}>
                   {JSON.stringify(results, null, 2)}
                 </pre>
               </div>

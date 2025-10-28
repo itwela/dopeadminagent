@@ -60,6 +60,58 @@ export async function POST(request: Request) {
         );
         break;
 
+      case 'getFirst10Accounts':
+        result = await dopeCoreDbTools.getFirst10Accounts();
+        break;
+
+      case 'searchAccountsByName':
+        if (!params?.nameQuery) {
+          return NextResponse.json({
+            success: false,
+            error: 'nameQuery is required',
+          }, { status: 400 });
+        }
+        result = await dopeCoreDbTools.searchAccountsByName(
+          params.nameQuery,
+          {
+            limit: params.limit || 25,
+            offset: params.offset || 0,
+          }
+        );
+        break;
+
+      case 'getAccountsByIntegrationsId':
+        if (!params?.integrationsCustomerId) {
+          return NextResponse.json({
+            success: false,
+            error: 'integrationsCustomerId is required',
+          }, { status: 400 });
+        }
+        result = await dopeCoreDbTools.getAccountsByIntegrationsId(
+          params.integrationsCustomerId,
+          {
+            limit: params.limit || 25,
+            offset: params.offset || 0,
+          }
+        );
+        break;
+
+      case 'getIntegrationsCustomerIdByName':
+        if (!params?.nameQuery) {
+          return NextResponse.json({
+            success: false,
+            error: 'nameQuery is required',
+          }, { status: 400 });
+        }
+        result = await dopeCoreDbTools.getIntegrationsCustomerIdByName(
+          params.nameQuery,
+          {
+            limit: params.limit || 25,
+            offset: params.offset || 0,
+          }
+        );
+        break;
+
       default:
         return NextResponse.json({
           success: false,
