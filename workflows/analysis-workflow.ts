@@ -232,56 +232,81 @@ export async function runBusinessAnalysisWorkflow(config: WorkflowConfig = {}): 
 
     // Step 4: Find New Contacts
     console.log("🔍 Step 4: Find New Contacts...");
-    const findNewContactsMessage = user(`Please use the context and targeting strategy from the previous steps to find new contacts for the client: ${clientName}`);
-    const historyWithFindNewContacts = [...history, findNewContactsMessage];
+    try {
+      const findNewContactsMessage = user(`Please use the context and targeting strategy from the previous steps to find new contacts for the client: ${clientName}`);
+      const historyWithFindNewContacts = [...history, findNewContactsMessage];
 
-    const step4 = await runner.run(findNewContactsAgentCore, historyWithFindNewContacts, { maxTurns: 30 });
-    if (!step4.finalOutput) {
-      throw new Error('Find new contacts failed to produce output');
+      console.log(`[Step 4] Running findNewContactsAgent for ${clientName}...`);
+      const step4 = await runner.run(findNewContactsAgentCore, historyWithFindNewContacts, { maxTurns: 30 });
+      
+      if (!step4.finalOutput) {
+        console.error('[Step 4] No final output from findNewContactsAgent');
+        throw new Error('Find new contacts failed to produce output');
+      }
+
+      console.log(`[Step 4] Received output, processing...`);
+      history.push(...(step4.newItems || []).map((i: any) => i.rawItem));
+      const step4Text = typeof step4.finalOutput === 'string' ? step4.finalOutput : JSON.stringify(step4.finalOutput);
+      
+      stepSections.push([
+        `# 🔍 Step 4: Find New Contacts Results - ${clientName}`,
+        `**Client:** ${clientName}`,
+        `**Generated:** ${new Date().toISOString()}`,
+        '',
+        step4Text,
+      ].join('\n'));
+
+      // Save step 4 result
+      const step4Result = {
+        stepNumber: 4,
+        agentName: "Find New Contacts",
+        stepTitle: `Find New Contacts - Property Search (${clientName})`,
+        response: step4Text,
+        timestamp: Date.now()
+      };
+      stepResults.push(step4Result);
+
+      await convex.mutation(api.threads.saveWorkflowResult, {
+        workflowRunId,
+        userId,
+        userName,
+        email,
+        stepNumber: 4,
+        agentName: "Find New Contacts",
+        stepTitle: `Find New Contacts - Property Search (${clientName})`,
+        response: step4Text,
+        threadId: currentThreadId || undefined,
+        metadata: { timestamp: new Date().toISOString(), clientName }
+      });
+
+      // Update workflow run status
+      await convex.mutation(api.threads.updateWorkflowRun, {
+        workflowRunId,
+        status: "running",
+        metadata: { currentStep: 4, totalSteps: 5, clientName }
+      });
+
+      console.log("✅ Step 4 completed");
+    } catch (step4Error: any) {
+      console.error('[Step 4] ERROR:', step4Error);
+      console.error('[Step 4] Error message:', step4Error?.message);
+      console.error('[Step 4] Error stack:', step4Error?.stack);
+      
+      // Save error to database
+      await convex.mutation(api.threads.updateWorkflowRun, {
+        workflowRunId,
+        status: "failed",
+        metadata: { 
+          currentStep: 4, 
+          totalSteps: 5, 
+          clientName,
+          error: step4Error?.message || String(step4Error),
+          errorStack: step4Error?.stack
+        }
+      });
+      
+      throw new Error(`Step 4 (Find New Contacts) failed: ${step4Error?.message || String(step4Error)}`);
     }
-
-    history.push(...(step4.newItems || []).map((i: any) => i.rawItem));
-    const step4Text = typeof step4.finalOutput === 'string' ? step4.finalOutput : JSON.stringify(step4.finalOutput);
-    
-    stepSections.push([
-      `# 🔍 Step 4: Find New Contacts Results - ${clientName}`,
-      `**Client:** ${clientName}`,
-      `**Generated:** ${new Date().toISOString()}`,
-      '',
-      step4Text,
-    ].join('\n'));
-
-    // Save step 4 result
-    const step4Result = {
-      stepNumber: 4,
-      agentName: "Find New Contacts",
-      stepTitle: `Find New Contacts - Property Search (${clientName})`,
-      response: step4Text,
-      timestamp: Date.now()
-    };
-    stepResults.push(step4Result);
-
-    await convex.mutation(api.threads.saveWorkflowResult, {
-      workflowRunId,
-      userId,
-      userName,
-    email,
-      stepNumber: 4,
-      agentName: "Find New Contacts",
-      stepTitle: `Find New Contacts - Property Search (${clientName})`,
-      response: step4Text,
-      threadId: currentThreadId || undefined,
-      metadata: { timestamp: new Date().toISOString(), clientName }
-    });
-
-    // Update workflow run status
-    await convex.mutation(api.threads.updateWorkflowRun, {
-      workflowRunId,
-      status: "running",
-      metadata: { currentStep: 4, totalSteps: 5, clientName }
-    });
-
-    console.log("✅ Step 4 completed");
 
     // Step 5: Generate Title
     console.log("📝 Step 5: Generate Title...");
@@ -317,13 +342,40 @@ export async function runBusinessAnalysisWorkflow(config: WorkflowConfig = {}): 
     };
 
   } catch (error: any) {
-    console.error('Workflow failed:', error);
+    console.error('[Workflow] FATAL ERROR:', error);
+    console.error('[Workflow] Error message:', error?.message);
+    console.error('[Workflow] Error stack:', error?.stack);
+    
+    // Generate workflow run ID if we don't have one yet
+    const errorWorkflowRunId = `failed_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
+    
+    try {
+      // Try to create a failed workflow run record
+      const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
+      await convex.mutation(api.threads.createWorkflowRun, {
+        workflowRunId: errorWorkflowRunId,
+        userId: userId || "error-user",
+        userName: userName || "Error User",
+        email: email,
+        title: `Failed: ${clientName || "Unknown Client"}`,
+        clientName: clientName || "Unknown Client",
+        status: "failed",
+        metadata: {
+          error: error?.message || String(error),
+          errorStack: error?.stack,
+          timestamp: new Date().toISOString()
+        }
+      });
+    } catch (dbError) {
+      console.error('[Workflow] Failed to save error to database:', dbError);
+    }
+    
     return {
       success: false,
-      workflowRunId: `failed_${Date.now()}`,
+      workflowRunId: errorWorkflowRunId,
       finalOutput: '',
       stepResults: [],
-      error: error.message
+      error: error?.message || String(error)
     };
   }
 }

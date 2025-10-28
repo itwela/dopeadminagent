@@ -110,13 +110,19 @@ export default function WorkflowsPage() {
         }
       } else {
         setWorkflowStatus("Workflow failed");
+        const errorMessage = typeof result.error === 'string' 
+          ? result.error 
+          : JSON.stringify(result.error);
         console.error('Workflow failed:', result.error);
-        alert(`Workflow failed: ${result.error}`);
+        alert(`Workflow failed: ${errorMessage}`);
       }
     } catch (error) {
       setWorkflowStatus("Workflow failed");
+      const errorMessage = error instanceof Error 
+        ? error.message 
+        : (typeof error === 'string' ? error : JSON.stringify(error));
       console.error('Failed to run workflow:', error);
-      alert(`Failed to run workflow: ${error}`);
+      alert(`Failed to run workflow: ${errorMessage}`);
     } finally {
       setRunningWorkflow(false);
       setTimeout(() => setWorkflowStatus(""), 3000); // Clear status after 3 seconds

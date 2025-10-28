@@ -308,6 +308,7 @@ export const createWorkflowRun = mutation({
     clientName: v.optional(v.string()),
     threadId: v.optional(v.string()),
     status: v.string(),
+    metadata: v.optional(v.any()),
   },
   returns: v.id("workflowRuns"),
   handler: async (ctx, args) => {
@@ -322,7 +323,7 @@ export const createWorkflowRun = mutation({
       threadId: args.threadId,
       status: args.status,
       createdAt: now,
-      metadata: {}
+      metadata: args.metadata || {}
     });
     return id;
   },
